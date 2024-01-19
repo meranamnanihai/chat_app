@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat app</title>
+    <script src = "/socket.io/socket.io.js"></script>
+    
+    
+  </head>
+  <style>
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: rgb(11, 164, 215);
+      height: 100vh;
+      width: 100vw;
+      box-sizing: border-box;
+      padding: 2%;
+    }
+    .start {
+      display: flex;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .chat {
+      background-color: rgb(202, 222, 22);
+      height: 70%;
+      position: relative;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    input {
+      bottom: 5%;
+      text-align: center;
+      width: 90%;
+      padding: 10px;
+      border-radius: 5px;
+      margin-left: 1%;
+      font-size: 20px;
+      transition: 1s;
+    }
+    .footer {
+      color: white;
+      background-color: black;
+      padding: 2%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+    }
+    input:focus {
+      /* transition: 2s; */
+      background-color: rgb(0, 0, 0);
+      color: white;
+    }
+    .left {
+      background-color: rgb(120, 245, 85);
+      padding: 10px;
+      border-radius: 5px;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      align-self: flex-end;
+    }
+    .right {
+      background-color: rgb(255, 255, 255);
+
+      padding: 10px;
+      border-radius: 5px;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      align-self: flex-start;
+    }
+    .chat-cont {
+      width: 100%;
+
+      display: flex;
+      flex-direction: column;
+      gap: 5%;
+      overflow: auto;
+      padding: 2%;
+      box-sizing: border-box;
+      height: 100%;
+    }
+    .msg {
+      max-width: 40%;
+    }
+
+    @media screen and (max-width: 768px) {
+      .start {
+        font-size: 10px;
+      }
+      body {
+        padding: 5%;
+        display: flex;
+
+        flex-direction: column;
+        justify-content: center;
+      }
+      input {
+        width: 90%;
+        left: 0;
+      }
+    }
+  </style>
+  <body>
+    <div class="start">
+      <h1>Welcome to Sigma Chat app 🗿🗿🗿</h1>
+    </div>
+    <div class="chat">
+      <div class="chat-cont">
+      </div>
+
+      <form action="" style="width: 100%; margin-top: 2%" id = "form">
+        <input type="text" placeholder="Enter text" id = "submit">
+      </form>
+    </div>
+    <div class="footer" class="text-center">Made by Admya Salar</div>
+    <script>
+    var name = prompt("Please enter your name")
+
+      const socket = io()
+      socket.emit("user-connected", name)
+      let form = document.getElementById("form")
+      let input = document.getElementById("submit")
+      form.addEventListener("submit", (e)=>
+      {
+        console.log("working")
+        e.preventDefault()
+        if (input.value) {
+          console.log("working 2")
+          socket.emit("message", `${name}: ${input.value}`)
+          let msg = document.createElement("div")
+          msg.className = "msg left"
+          msg.innerHTML = `you:${input.value}`
+          document.getElementsByClassName("chat-cont")[0].appendChild(msg)
+          input.value = "";
+        }
+
+      })
+      socket.on("message", function(message){
+        let msg = document.createElement("div")
+        msg.className = "msg right"
+        msg.innerHTML = `${message}`
+        document.getElementsByClassName("chat-cont")[0].appendChild(msg)
+      })
+    </script>
+  </body>
+</html>
